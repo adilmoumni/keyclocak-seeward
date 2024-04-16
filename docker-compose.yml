@@ -1,0 +1,113 @@
+---
+# version: '3.8'
+volumes:
+  postgres_data:
+    driver: local
+
+services:
+
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak_db
+    hostname: db
+    environment:
+      # POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # networks:
+    #   - "postgres-network"
+  keycloak:
+    build: .
+    container_name: keycloak
+    environment:
+      # KEYCLOAK_USER: user
+      # KEYCLOAK_PASSWORD: user
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+    # ports:
+    #   - "8080:8080"
+    depends_on:
+      - keycloak-db
+    hostname: keycloak
+    # networks:
+    #   - "postgres-network"
+  # keycloak:
+  #   image: bitnami/keycloak:22
+  #   # build: .
+  #   # entrypoint: /opt/bitnami/keycloak/bin/kc.sh start 
+  #   container_name: keycloak
+  #   # command:
+  #   #   - /opt/bitnami/keycloak/bin/kc.sh start
+  #   # volumes:
+  #   #   -./fullchain.pem: /opt/bitnami/keycloak/conf
+  #   #   -./privkey.pem: /opt/bitnami/keycloak/conf
+  #   environment:
+  #     KEYCLOAK_USER: user
+  #     KEYCLOAK_PASSWORD: user
+  #     KEYCLOAK_ADMIN: admin
+  #     KEYCLOAK_ADMIN_PASSWORD: admin
+  #     DB_VENDOR: POSTGRES
+  #     DB_ADDR: keycloak-db
+  #     DB_DATABASE: keycloak
+  #     DB_USER: keycloak
+  #     DB_SCHEMA: public
+  #     DB_PASSWORD: password 
+  #     # KC_HTTPS_CERTIFICATE_FILE: /opt/bitnami/keycloak/conf/fullchain.pem
+  #     # KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/bitnami/keycloak/conf/privkey.pem
+  #     # KC_DB_URL: jdbc:postgresql://db:5432/keycloak
+  #     # KEYCLOAK_USER: keycloak
+  #     # KEYCLOAK_PASSWORD: keycloak
+  #     # KC_DB_USERNAME: keycloak_user@seeward.io
+  #     # KC_DB_PASSWORD: user@seeward$$
+  #     # KEYCLOAK_ADMIN: keycloak_admin@seeward.io
+  #     # KEYCLOAK_ADMIN_PASSWORD: Admin@Seeward321@$
+  #     # DB_VENDOR: POSTGRES
+  #     # DB_ADDR: db
+  #     # DB_DATABASE: keycloak
+  #     # DB_USER: keycloak
+  #     # # KC_DB_SCHEMA: public
+  #     # DB_PASSWORD: keycloak
+
+  #   # ports:
+  #   #   - "8090:8090"
+    
+  #   depends_on:
+  #     - keycloak-db
+  #   # hostname: keycloak
+  #   networks:
+  #     - "postgres-network"
+
+  # keycloak:
+  #   image: bitnami/keycloak:22
+  #   container_name: keycloak
+  #   environment:
+  #     KEYCLOAK_USER: user
+  #     KEYCLOAK_PASSWORD: user
+  #     KEYCLOAK_ADMIN: admin
+  #     KEYCLOAK_ADMIN_PASSWORD: admin
+  #     DB_VENDOR: POSTGRES
+  #     DB_ADDR: keycloak-db
+  #     DB_DATABASE: keycloak
+  #     DB_USER: keycloak
+  #     DB_SCHEMA: public
+  #     DB_PASSWORD: password
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - keycloak-db
+  #   hostname: keycloak
+  #   networks:
+  #     - "postgres-network"
+
+# networks:
+  # postgres-network:
+  #   driver: bridge
